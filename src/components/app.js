@@ -1,8 +1,9 @@
 import React, { Component } from "react";
 import { Switch, Route } from "react-router-dom";
+import Cookies from "js-cookie";
 
 import Home from "./pages/home";
-import SignUp from "./signup";
+import SignUp from "./pages/signup";
 import Rules from "./rules";
 import Game from "./game";
 import GameOver from "./game-over";
@@ -12,7 +13,7 @@ export default class App extends Component {
     super();
 
     this.state = {
-      user: "",
+      user: Cookies.get("username") || "",
     };
 
     this.handleSetUser = this.handleSetUser.bind(this);
@@ -35,7 +36,12 @@ export default class App extends Component {
               <Home {...props} handleSetUser={this.handleSetUser} />
             )}
           />
-          <Route path="/signup" component={SignUp} />
+          <Route
+            path="/signup"
+            render={(props) => (
+              <SignUp {...props} handleSetUser={this.handleSetUser} />
+            )}
+          />
           <Route path="/rules" component={Rules} />
           <Route path="/game" component={Game} />
           <Route path="/game-over" component={GameOver} />

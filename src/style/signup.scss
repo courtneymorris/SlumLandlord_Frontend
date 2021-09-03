@@ -1,0 +1,7 @@
+.signup-wrapper {
+  @include page-styles;
+
+  button {
+    @include button-styles;
+  }
+}

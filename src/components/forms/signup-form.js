@@ -3,13 +3,14 @@ import Cookies from "js-cookie";
 
 import loading from "../../../static/assets/loading.gif";
 
-export default class LoginForm extends Component {
+export default class SignUpForm extends Component {
   constructor(props) {
     super();
 
     this.state = {
       username: "",
       password: "",
+      passwordConfirm: "",
       error: "",
       loading: false,
     };
@@ -21,15 +22,21 @@ export default class LoginForm extends Component {
   handleSubmit(event) {
     event.preventDefault();
 
-    if (this.state.username === "" || this.state.password === "") {
+    if (
+      this.state.username === "" ||
+      this.state.password === "" ||
+      this.state.passwordConfirm === ""
+    ) {
       this.setState({ error: "Please fill out all fields" });
+    } else if (this.state.password != this.state.passwordConfirm) {
+      this.setState({ error: "Passwords do not match!" });
     } else {
       this.setState({
         loading: true,
         error: "",
       });
 
-      fetch("http://127.0.0.1:5000/user/verification", {
+      fetch("http://127.0.0.1:5000/user/add", {
         method: "POST",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({
@@ -42,16 +49,9 @@ export default class LoginForm extends Component {
           console.log(data);
 
           this.setState({ loading: false });
-          if (data === "User Verified") {
-            this.props.handleSetUser(this.state.username);
-            Cookies.set("username", this.state.username);
-            this.props.changeRoute("/rules");
-          } else {
-            this.setState({ error: "Invalid username or password " });
-          }
         })
         .catch((error) => {
-          console.log("Error logging in", error);
+          console.log("Error adding user", error);
           this.setState({
             loading: false,
             error: "An error occurred. Please try again later.",
@@ -68,7 +68,7 @@ export default class LoginForm extends Component {
 
   render() {
     return (
-      <form className="form-wrapper" onSubmit={this.handleSubmit}>
+      <form className="signup-wrapper" onSubmit={this.handleSubmit}>
         <input
           type="text"
           placeholder="Username"
@@ -83,8 +83,15 @@ export default class LoginForm extends Component {
           value={this.state.password}
           onChange={this.handleChange}
         />
+        <input
+          type="password"
+          placeholder="Confirm Password"
+          name="passwordConfirm"
+          value={this.state.passwordConfirm}
+          onChange={this.handleChange}
+        />
         <button type="submit" disabled={this.state.loading}>
-          Login
+          Sign Up
         </button>
         <p>{this.state.error}</p>
         {this.state.loading ? (

@@ -1,0 +1,17 @@
+@mixin page-styles {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+@mixin button-styles {
+  background-color: white;
+  width: 110px;
+  border: 1px solid black;
+  border-radius: 3px;
+
+  &:active {
+    transform: translateY(1px);
+  }
+}
