@@ -4,7 +4,7 @@ import Cookies from "js-cookie";
 
 import Home from "./pages/home";
 import SignUp from "./pages/signup";
-import Rules from "./rules";
+import Rules from "./pages/rules";
 import Game from "./game";
 import GameOver from "./game-over";
 
@@ -13,10 +13,27 @@ export default class App extends Component {
     super();
 
     this.state = {
-      user: Cookies.get("username") || "",
+      user: {},
+      loading: true,
     };
 
     this.handleSetUser = this.handleSetUser.bind(this);
+  }
+
+  componentDidMount() {
+    if (Cookies.get("username")) {
+      fetch(`http://127.0.0.1:5000/user/get/${Cookies.get("username")}`)
+        .then((response) => response.json())
+        .then((data) => {
+          this.setState({ user: data, loading: false });
+        })
+        .catch((error) => {
+          console.log("Error getting user data", error);
+          this.setState({ loading: false });
+        });
+    } else {
+      this.setState({ loading: false });
+    }
   }
 
   handleSetUser(userData) {
@@ -28,24 +45,31 @@ export default class App extends Component {
   render() {
     return (
       <div className="app">
-        <Switch>
-          <Route
-            exact
-            path="/"
-            render={(props) => (
-              <Home {...props} handleSetUser={this.handleSetUser} />
-            )}
-          />
-          <Route
-            path="/signup"
-            render={(props) => (
-              <SignUp {...props} handleSetUser={this.handleSetUser} />
-            )}
-          />
-          <Route path="/rules" component={Rules} />
-          <Route path="/game" component={Game} />
-          <Route path="/game-over" component={GameOver} />
-        </Switch>
+        {this.state.loading ? (
+          <h1>Loading...</h1>
+        ) : (
+          <Switch>
+            <Route
+              exact
+              path="/"
+              render={(props) => (
+                <Home {...props} handleSetUser={this.handleSetUser} />
+              )}
+            />
+            <Route
+              path="/signup"
+              render={(props) => (
+                <SignUp {...props} handleSetUser={this.handleSetUser} />
+              )}
+            />
+            <Route
+              path="/rules"
+              render={(props) => <Rules {...props} user={this.state.user} />}
+            />
+            <Route path="/game" component={Game} />
+            <Route path="/gameover" component={GameOver} />
+          </Switch>
+        )}
       </div>
     );
   }

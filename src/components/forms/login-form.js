@@ -42,12 +42,13 @@ export default class LoginForm extends Component {
           console.log(data);
 
           this.setState({ loading: false });
-          if (data === "User Verified") {
-            this.props.handleSetUser(this.state.username);
+
+          if (data === "User NOT Verified") {
+            this.setState({ error: "Invalid username or password " });
+          } else {
+            this.props.handleSetUser(data);
             Cookies.set("username", this.state.username);
             this.props.changeRoute("/rules");
-          } else {
-            this.setState({ error: "Invalid username or password " });
           }
         })
         .catch((error) => {
