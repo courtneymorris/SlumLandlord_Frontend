@@ -8,8 +8,8 @@ export default function rules(props) {
     props.history.push("/");
   }
 
-  const handleNewGame = () => {
-    const resetData = resetGame(props.user.id);
+  const handleNewGame = async () => {
+    const resetData = await resetGame(props.user.id);
 
     if (resetData.error) {
       props.handleSetError(resetData.error);

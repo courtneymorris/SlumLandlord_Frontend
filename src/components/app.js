@@ -5,7 +5,7 @@ import Cookies from "js-cookie";
 import Home from "./pages/home";
 import SignUp from "./pages/signup";
 import Rules from "./pages/rules";
-import Game from "./game";
+import Game from "./pages/game";
 import GameOver from "./game-over";
 
 export default class App extends Component {
@@ -82,7 +82,16 @@ export default class App extends Component {
               )}
             />
             <Route path="/game" component={Game} />
-            <Route path="/gameover" component={GameOver} />
+            <Route
+              path="/gameover"
+              render={(props) => (
+                <Game
+                  {...props}
+                  user={this.state.user}
+                  handleSetUser={this.handleSetUser}
+                />
+              )}
+            />
           </Switch>
         )}
         <p>{this.state.error}</p>
