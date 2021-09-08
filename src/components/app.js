@@ -15,9 +15,11 @@ export default class App extends Component {
     this.state = {
       user: {},
       loading: true,
+      error: "",
     };
 
     this.handleSetUser = this.handleSetUser.bind(this);
+    this.handleSetError = this.handleSetError.bind(this);
   }
 
   componentDidMount() {
@@ -29,7 +31,9 @@ export default class App extends Component {
         })
         .catch((error) => {
           console.log("Error getting user data", error);
-          this.setState({ loading: false });
+          this.setState({
+            error: "An error occurred... Please try again later.",
+          });
         });
     } else {
       this.setState({ loading: false });
@@ -40,6 +44,10 @@ export default class App extends Component {
     this.setState({
       user: userData,
     });
+  }
+
+  handleSetError(errorData) {
+    this.setState({ error: errorData });
   }
 
   render() {
@@ -64,12 +72,20 @@ export default class App extends Component {
             />
             <Route
               path="/rules"
-              render={(props) => <Rules {...props} user={this.state.user} />}
+              render={(props) => (
+                <Rules
+                  {...props}
+                  user={this.state.user}
+                  handleSetUser={this.handleSetUser}
+                  handleSetError={this.handleSetError}
+                />
+              )}
             />
             <Route path="/game" component={Game} />
             <Route path="/gameover" component={GameOver} />
           </Switch>
         )}
+        <p>{this.state.error}</p>
       </div>
     );
   }

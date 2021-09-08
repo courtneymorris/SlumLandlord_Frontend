@@ -1,5 +1,5 @@
 export default async function resetGame(userId) {
-  const user = {};
+  let user = {};
   let error;
 
   await fetch(`http://127.0.0.1:5000/token/delete/${userId}`, {
